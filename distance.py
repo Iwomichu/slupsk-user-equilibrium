@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+
+
 def meters_to_degrees(meters: float) -> float:
     # Note: Dirty and unreliable, but should be sufficient for the sake of population generation
     return 0.82/1504 * meters/60
@@ -11,7 +14,7 @@ class Distance:
     meters: float
 
     def __init__(
-            self,
+            self, *,
             meters: float = 0,
             kilometers: float = 0.,
             centimeters: float = 0.,
@@ -35,3 +38,9 @@ class Distance:
     @property
     def minutes(self):
         return self.degrees * 60
+
+
+@dataclass(frozen=True)
+class Coordinates:
+    latitude: float
+    longitude: float

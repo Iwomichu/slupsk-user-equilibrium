@@ -1,0 +1,28 @@
+{
+  "epicentres": [
+    {
+      "label": "srodmiescie",
+      "latitude": 54.464491495553546,
+      "longitude": 17.028357332971545,
+      "population_count": 32000,
+      "radius": 500,
+      "distribution_kind": "normal"
+    },
+    {
+      "label": "ryczewo_slowinskie",
+      "latitude": 54.4708131222212,
+      "longitude": 17.047130463639125,
+      "population_count": 4000,
+      "radius": 500,
+      "distribution_kind": "normal"
+    },
+    {
+      "label": "niepodleglosci_piastow",
+      "latitude": 54.459289675161926,
+      "longitude": 16.996493623599886,
+      "population_count": 29000,
+      "radius": 500,
+      "distribution_kind": "normal"
+    }
+  ]
+}
