@@ -118,10 +118,6 @@ def get_paths_between_clusters(
                 k=1,
             ))[0]
             if len(path_node_ids) < 3:
-                print("======")
-                print(f"{cluster.h3_hex_id} to {neighbour.h3_hex_id}")
-                print(path_node_ids)
-                print("======")
                 continue
             atlas.add_path(cluster.h3_hex_id, neighbour.h3_hex_id, path_node_ids)
 
