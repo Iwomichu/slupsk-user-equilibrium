@@ -10,7 +10,7 @@ import osmnx.distance
 
 from clusters import Cluster
 from types import NodeId, ClusterId
-from distance import Speed, Distance
+from distance import Speed, Distance, Time
 
 
 class PathAtlas:
@@ -109,7 +109,7 @@ def get_path_data(
     return PathData(
         start_cluster=clusters_crossed[0],
         end_cluster=clusters_crossed[~0],
-        minimal_maximal_speed=Speed(distance_per_hour=Distance(kilometers=minimal_maximal_kph)),
+        minimal_maximal_speed=Speed(distance=Distance(kilometers=minimal_maximal_kph), time=Time(hours=1)),
         minimal_lane_count=minimal_lane_count,
         length=Distance(meters=total_meters),
         crosses_other_clusters=crosses_other_clusters,

@@ -55,7 +55,7 @@ class Time:
 
 
 class Speed:
-    def __init__(self, *, distance: Optional[Distance], time: Optional[Time]) -> None:
+    def __init__(self, *, distance: Optional[Distance] = None, time: Optional[Time] = None) -> None:
         if distance is None:
             distance = Distance(meters=0)
 
