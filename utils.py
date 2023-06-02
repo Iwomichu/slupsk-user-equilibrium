@@ -1,11 +1,13 @@
 from typing import List, Optional
 
 import folium
+import h3
 import networkx
 import osmnx
 import osmnx.distance
 from networkx.classes.reportviews import NodeView
 
+from clusters import Cluster
 from distance import Coordinates
 
 
@@ -56,3 +58,36 @@ def visualize_points(
                 fill=True,
             ),
         )
+
+
+def visualize_clusters(
+        map_: folium.Map,
+        clusters: List[Cluster],
+        colors: Optional[str] = None,
+) -> None:
+    if colors is None:
+        colors = ['blue', 'green', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue', 'darkgreen',
+                  'cadetblue', 'darkpurple', 'white', 'pink', 'lightblue', 'lightgreen', 'gray', 'black', 'lightgray']
+    hexagons = [cluster.h3_hex_id for cluster in clusters]
+    polylines = []
+    lat = []
+    lng = []
+    for hexagon in hexagons:
+        polygons = h3.h3_set_to_multi_polygon([hexagon], geo_json=False)
+        # flatten polygons into loops.
+        outlines = [loop for polygon in polygons for loop in polygon]
+        polyline = [outline + [outline[0]] for outline in outlines][0]
+        lat.extend(map(lambda v: v[0], polyline))
+        lng.extend(map(lambda v: v[1], polyline))
+        polylines.append(polyline)
+
+    for i, polyline in enumerate(polylines):
+        poly_line = folium.PolyLine(
+            locations=polyline,
+            weight=1,
+            color=colors[i % len(colors)],
+            fill=True,
+            tooltip=f"{len(clusters[i].points)}",
+            popup=hexagons[i]
+        )
+        map_.add_child(poly_line)
