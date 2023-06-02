@@ -38,13 +38,18 @@ class PopulationGenerationEpicentre:
 @dataclass
 class PopulationGeneratorConfig:
     epicentres: list[PopulationGenerationEpicentre]
+    travel_coefficient: float
 
     @staticmethod
     def from_json_file(path: pathlib.Path) -> PopulationGeneratorConfig:
         with open(path, 'r') as f:
-            return PopulationGeneratorConfig(epicentres=[
-                PopulationGenerationEpicentre.from_json_record(record) for record in json.load(f)["epicentres"]
-            ])
+            config = json.load(f)
+            return PopulationGeneratorConfig(
+                epicentres=[
+                    PopulationGenerationEpicentre.from_json_record(record) for record in config["epicentres"]
+                ],
+                travel_coefficient=config["travel_coefficient"],
+            )
 
 
 def generate_data_points(epicentre: PopulationGenerationEpicentre) -> list[Coordinates]:

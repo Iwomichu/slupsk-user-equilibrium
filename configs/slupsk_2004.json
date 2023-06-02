@@ -24,5 +24,6 @@
       "radius": 500,
       "distribution_kind": "normal"
     }
-  ]
+  ],
+  "travel_coefficient": 0.5
 }
