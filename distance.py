@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 def meters_to_degrees(meters: float) -> float:
@@ -40,17 +41,39 @@ class Distance:
         return self.degrees * 60
 
 
+class Time:
+    def __init__(self, *, seconds: float = 0, minutes: float = 0, hours: float = 0) -> None:
+        self.seconds = seconds + 60 * minutes + 3600 * hours
+
+    @property
+    def minutes(self):
+        return self.seconds / 60
+
+    @property
+    def hours(self):
+        return self.seconds / 3600
+
+
 class Speed:
-    def __init__(self, distance_per_hour: Distance) -> None:
-        self.distance_per_hour = distance_per_hour
+    def __init__(self, *, distance: Optional[Distance], time: Optional[Time]) -> None:
+        if distance is None:
+            distance = Distance(meters=0)
+
+        if time is None:
+            time = Time(hours=1)
+
+        self.distance_per_hour = Distance(meters=distance.meters / time.hours)
+
+    def distance_per_time(self, time: Time) -> Distance:
+        return Distance(meters=self.distance_per_hour.meters / time.hours)
 
     @property
     def distance_per_minute(self) -> Distance:
-        return Distance(meters=self.distance_per_hour.meters / 60)
+        return self.distance_per_time(time=Time(minutes=1))
 
     @property
     def distance_per_second(self) -> Distance:
-        return Distance(meters=self.distance_per_minute.meters / 60)
+        return self.distance_per_time(time=Time(seconds=1))
 
 
 @dataclass(frozen=True)

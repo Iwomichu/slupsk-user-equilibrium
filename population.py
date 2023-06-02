@@ -2,16 +2,12 @@ from __future__ import annotations
 
 import json
 import pathlib
-from enum import Enum
 from dataclasses import dataclass
 
 import numpy as np
 
 from distance import Distance, Coordinates
-
-
-class PopulationGenerationDistributionKind(str, Enum):
-    NORMAL = "NORMAL"
+from types import PopulationGenerationDistributionKind
 
 
 @dataclass

@@ -2,7 +2,8 @@ import random
 from dataclasses import dataclass
 from typing import List
 
-from clusters import Cluster, ClusterId
+from clusters import Cluster
+from types import ClusterId
 from population import PopulationGeneratorConfig
 
 

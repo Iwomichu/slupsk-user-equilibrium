@@ -2,21 +2,13 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
-from enum import Enum
 from statistics import mean
 from typing import List, Dict
 
 import h3
 
 from distance import Coordinates
-
-NodeId = int
-ClusterId = str
-
-
-class ClusterCentreStrategy(str, Enum):
-    MEAN = 'MEAN'
-    HEXAGON_CENTER = 'HEXAGON_CENTER'
+from types import ClusterId, ClusterCentreStrategy
 
 
 @dataclass(frozen=True)

@@ -8,7 +8,8 @@ import h3
 import networkx
 import osmnx.distance
 
-from clusters import ClusterId, NodeId, Cluster
+from clusters import Cluster
+from types import NodeId, ClusterId
 from distance import Speed, Distance
 
 
@@ -74,6 +75,14 @@ class PathData:
     minimal_lane_count: int  # TODO: Maybe add more lane characteristics or stats
     length: Distance
     crosses_other_clusters: bool
+
+    @property
+    def max_capacity(self) -> int:
+        return self.minimal_lane_count * 2200
+
+    @property
+    def free_flow_travel_time(self):
+        return
 
 
 def get_path_data(
