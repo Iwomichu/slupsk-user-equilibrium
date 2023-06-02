@@ -7,11 +7,8 @@ from statistics import mean
 from typing import List, Dict
 
 import h3
-import networkx
-import osmnx.distance
 
 from distance import Coordinates
-
 
 NodeId = int
 ClusterId = str
@@ -67,58 +64,3 @@ class Cluster:
         points_by_hex_id = Cluster.group_points(points, resolution)
         centres_by_hex_id = Cluster.generate_cluster_centre(points_by_hex_id, strategy)
         return Cluster.create_clusters(points_by_hex_id, centres_by_hex_id, strategy)
-
-
-class PathAtlas:
-    def __init__(self) -> None:
-        self.path_from_cluster_id_to_cluster_id: Dict[ClusterId, Dict[ClusterId, List[NodeId]]] = defaultdict(dict)
-
-    def add_path(self, from_cluster: ClusterId, to_cluster: ClusterId, path: List[NodeId]) -> None:
-        self.path_from_cluster_id_to_cluster_id[from_cluster][to_cluster] = path
-        self.path_from_cluster_id_to_cluster_id[to_cluster][from_cluster] = path
-
-    def path_exists(self, from_cluster: ClusterId, to_cluster: ClusterId) -> bool:
-        return to_cluster in self.path_from_cluster_id_to_cluster_id[from_cluster].keys()
-
-    def get_path(self, from_cluster: ClusterId, to_cluster: ClusterId) -> List[NodeId]:
-        return self.path_from_cluster_id_to_cluster_id[from_cluster][to_cluster]
-
-    def get_paths(self) -> List[List[NodeId]]:
-        return [
-            list(path)
-            for paths_from_cluster in self.path_from_cluster_id_to_cluster_id.values()
-            for path in paths_from_cluster.values()
-        ]
-
-
-def get_paths_between_clusters(
-        graph: networkx.MultiDiGraph,
-        clusters: List[Cluster],
-) -> PathAtlas:
-    atlas = PathAtlas()
-    clusters_by_hex_id = {cluster.h3_hex_id: cluster for cluster in clusters}
-    cluster_centroid_graph_node_ids_by_hex_id = {
-        cluster.h3_hex_id: osmnx.distance.nearest_nodes(graph, cluster.centre.longitude, cluster.centre.latitude)
-        for cluster in clusters
-    }
-    for cluster in clusters:
-        neighbours: List[Cluster] = [
-            clusters_by_hex_id[neighbour_hex_id]
-            for neighbour_hex_id in h3.k_ring(cluster.h3_hex_id, k=1)
-            if neighbour_hex_id in clusters_by_hex_id.keys()
-        ]
-        for neighbour in neighbours:
-            if atlas.path_exists(cluster.h3_hex_id, neighbour.h3_hex_id):
-                continue
-
-            path_node_ids = list(osmnx.distance.k_shortest_paths(
-                graph,
-                orig=cluster_centroid_graph_node_ids_by_hex_id[cluster.h3_hex_id],
-                dest=cluster_centroid_graph_node_ids_by_hex_id[neighbour.h3_hex_id],
-                k=1,
-            ))[0]
-            if len(path_node_ids) < 3:
-                continue
-            atlas.add_path(cluster.h3_hex_id, neighbour.h3_hex_id, path_node_ids)
-
-    return atlas
