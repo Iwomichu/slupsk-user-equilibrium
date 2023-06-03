@@ -6,9 +6,11 @@ from statistics import mean
 from typing import List, Dict
 
 import h3
+import networkx
+import osmnx
 
 from distance import Coordinates
-from types import ClusterId, ClusterCentreStrategy
+from my_types import ClusterId, ClusterCentreStrategy
 
 
 @dataclass(frozen=True)
@@ -56,3 +58,22 @@ class Cluster:
         points_by_hex_id = Cluster.group_points(points, resolution)
         centres_by_hex_id = Cluster.generate_cluster_centre(points_by_hex_id, strategy)
         return Cluster.create_clusters(points_by_hex_id, centres_by_hex_id, strategy)
+
+    @staticmethod
+    def consolidate_clusters(clusters: List[Cluster], graph: networkx.MultiDiGraph, resolution: int) -> List[Cluster]:
+        clusters_by_id = {cluster.h3_hex_id: cluster for cluster in clusters}
+        output_clusters_by_id: Dict[ClusterId, List[Cluster]] = defaultdict(list)
+        for cluster in clusters:
+            node = graph.nodes[osmnx.nearest_nodes(graph, cluster.centre.longitude, cluster.centre.latitude)]
+            nodes_cluster = h3.geo_to_h3(lat=node['y'], lng=node['x'], resolution=resolution)
+            if nodes_cluster in clusters_by_id.keys():
+                output_clusters_by_id[nodes_cluster].append(cluster)
+
+        return [
+            Cluster(
+                cluster_id,
+                clusters_by_id[cluster_id].centre,
+                points=[point for subcluster in clusters for point in subcluster.points],
+            )
+            for cluster_id, clusters in output_clusters_by_id.items()
+        ]

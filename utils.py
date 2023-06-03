@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Sequence, TypeVar, Generator
 
 import folium
 import h3
@@ -91,3 +91,12 @@ def visualize_clusters(
             popup=hexagons[i]
         )
         map_.add_child(poly_line)
+
+
+_T = TypeVar("_T")
+
+
+def batched(iterable: Sequence[_T], n=1) -> Generator[Sequence[_T], None, None]:
+    iterable_length = len(iterable)
+    for ndx in range(0, iterable_length, n):
+        yield iterable[ndx:min(ndx + n, iterable_length)]

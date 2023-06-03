@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from distance import Distance, Coordinates
-from types import PopulationGenerationDistributionKind
+from my_types import PopulationGenerationDistributionKind
 
 
 @dataclass

@@ -65,7 +65,7 @@ class Speed:
         self.distance_per_hour = Distance(meters=distance.meters / time.hours)
 
     def distance_per_time(self, time: Time) -> Distance:
-        return Distance(meters=self.distance_per_hour.meters / time.hours)
+        return Distance(meters=self.distance_per_hour.meters * time.hours)
 
     @property
     def distance_per_minute(self) -> Distance:

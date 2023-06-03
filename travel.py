@@ -1,16 +1,27 @@
 import random
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass, field
+from typing import List, Generator, ClassVar
 
 from clusters import Cluster
-from types import ClusterId
+from my_types import ClusterId
 from population import PopulationGeneratorConfig
+
+
+def id_generator() -> Generator[int, None, None]:
+    i = 0
+    while True:
+        i += 1
+        yield i
+
+
+travel_id_generator = id_generator()
 
 
 @dataclass
 class Travel:
     start: Cluster
     end: Cluster
+    id_: int = field(default_factory=lambda: next(travel_id_generator))
 
 
 class TravelGenerator:

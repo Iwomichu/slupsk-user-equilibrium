@@ -9,7 +9,7 @@ import networkx
 import osmnx.distance
 
 from clusters import Cluster
-from types import NodeId, ClusterId
+from my_types import NodeId, ClusterId
 from distance import Speed, Distance, Time
 
 
@@ -69,8 +69,8 @@ def get_paths_between_clusters(
 
 @dataclass(frozen=True)
 class PathData:
-    start_cluster: Cluster
-    end_cluster: Cluster
+    start_cluster: ClusterId
+    end_cluster: ClusterId
     minimal_maximal_speed: Speed
     minimal_lane_count: int  # TODO: Maybe add more lane characteristics or stats
     length: Distance
@@ -81,8 +81,8 @@ class PathData:
         return self.minimal_lane_count * 2200
 
     @property
-    def free_flow_travel_time(self):
-        return
+    def free_flow_travel_time(self) -> Time:
+        return Time(seconds=self.length.meters / self.minimal_maximal_speed.distance_per_second.meters)
 
 
 def get_path_data(
@@ -103,7 +103,6 @@ def get_path_data(
     valid_clusters_crossed = tuple(cluster_id for cluster_id in clusters_crossed if cluster_id in valid_clusters)
     total_meters = sum(details['length'] for details in edge_details)
     minimal_maximal_kph = min(details['speed_kph'] for details in edge_details)
-    print(edge_details)
     minimal_lane_count = min(int(details.get('lanes', "1")[0]) for details in edge_details)
     crosses_other_clusters = (valid_clusters_crossed[0], valid_clusters_crossed[~0]) == valid_clusters_crossed
     return PathData(
