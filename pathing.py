@@ -125,6 +125,7 @@ def create_cluster_graph(graph: networkx.MultiDiGraph, clusters: List[Cluster], 
         for from_cluster, destinations in atlas.path_from_cluster_id_to_cluster_id.items()
         for to_cluster, path in destinations.items()
     ]
+    edges = [(from_cluster, to_cluster, data) for (from_cluster, to_cluster, data) in edges if not data["data"].crosses_other_clusters]
     cluster_graph = networkx.DiGraph()
     cluster_graph.add_edges_from(edges)
     return cluster_graph
