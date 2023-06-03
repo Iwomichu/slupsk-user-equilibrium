@@ -25,6 +25,17 @@ def visualize_paths(
         osmnx.plot_route_folium(graph, path, route_map=map_, color=colors[i % len(colors)])
 
 
+def visualize_weighted_paths(
+        map_: folium.Map,
+        graph: networkx.MultiDiGraph,
+        paths: List[List[NodeView]],
+        colors: List[str],
+        weights: List[float],
+) -> None:
+    for i, path in enumerate(paths):
+        osmnx.plot_route_folium(graph, path, route_map=map_, color=colors[i], weight=weights[i])
+
+
 def visualize_paths_coordinates(
         map_: folium.Map,
         graph: networkx.MultiDiGraph,
@@ -100,3 +111,7 @@ def batched(iterable: Sequence[_T], n=1) -> Generator[Sequence[_T], None, None]:
     iterable_length = len(iterable)
     for ndx in range(0, iterable_length, n):
         yield iterable[ndx:min(ndx + n, iterable_length)]
+
+
+def rescale(value: _T, old_max: _T, old_min: _T, new_max: _T, new_min: _T) -> _T:
+    return (new_max - new_min) / (old_max - old_min) * (value - old_max) + new_max

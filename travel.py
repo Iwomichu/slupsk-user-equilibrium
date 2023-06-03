@@ -1,6 +1,6 @@
 import random
 from dataclasses import dataclass, field
-from typing import List, Generator, ClassVar
+from typing import List, Generator
 
 from clusters import Cluster
 from my_types import ClusterId

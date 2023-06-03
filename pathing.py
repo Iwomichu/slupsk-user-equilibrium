@@ -75,6 +75,7 @@ class PathData:
     minimal_lane_count: int  # TODO: Maybe add more lane characteristics or stats
     length: Distance
     crosses_other_clusters: bool
+    path: List[NodeId]
 
     @property
     def max_capacity(self) -> int:
@@ -112,6 +113,7 @@ def get_path_data(
         minimal_lane_count=minimal_lane_count,
         length=Distance(meters=total_meters),
         crosses_other_clusters=crosses_other_clusters,
+        path=path,
     )
 
 
