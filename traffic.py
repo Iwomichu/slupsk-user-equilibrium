@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
+from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 import networkx
 
@@ -93,3 +94,22 @@ class IncrementalBatchRouteAssigner(TravelRouteAssigner):
             for travel_id, current_route in current_routes.items()
             if len(current_route) > 0
         ]
+
+    def get_total_slowdown(self) -> Time:
+        return Time(
+            minutes=sum(
+                state.travel_time.minutes - state.path_data.free_flow_travel_time.minutes
+                for (start, end, state) in self.graph.edges.data("state")
+            ),
+        )
+
+    def get_largest_time_distance_between_same_travels(self, routes: List[Route]) -> Time:
+        same_travels_estimated_times: Dict[Tuple[ClusterId, ClusterId], List[Time]] = defaultdict(list)
+        for route in routes:
+            start, end = route.nodes[0], route.nodes[~0]
+            same_travels_estimated_times[(start, end)].append(route.estimated_travel_time)
+        same_travel_differences = []
+        for same_travel_estimated_times in same_travels_estimated_times.values():
+            minutes = [time.minutes for time in same_travel_estimated_times]
+            same_travel_differences.append(max(minutes) - min(minutes))
+        return Time(minutes=max(same_travel_differences))
