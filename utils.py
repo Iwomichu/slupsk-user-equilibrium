@@ -55,7 +55,7 @@ def visualize_paths_coordinates(
 def visualize_points(
         map_: folium.Map,
         points: List[Coordinates],
-        colors: Optional[str] = None,
+        colors: Optional[List[str]] = None,
 ) -> None:
     if colors is None:
         colors = ['blue', 'green', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue', 'darkgreen',
@@ -74,7 +74,7 @@ def visualize_points(
 def visualize_clusters(
         map_: folium.Map,
         clusters: List[Cluster],
-        colors: Optional[str] = None,
+        colors: Optional[List[str]] = None,
 ) -> None:
     if colors is None:
         colors = ['blue', 'green', 'purple', 'orange', 'darkred', 'lightred', 'beige', 'darkblue', 'darkgreen',
