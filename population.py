@@ -49,7 +49,7 @@ class PopulationGeneratorConfig:
 
     def multiply_population(self, multiplier: float) -> None:
         for epicentre in self.epicentres:
-            epicentre.population_count *= multiplier
+            epicentre.population_count = round(epicentre.population_count * multiplier)
 
 
 def generate_data_points(epicentre: PopulationGenerationEpicentre) -> list[Coordinates]:

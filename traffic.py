@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Tuple
 
 import networkx
+from tqdm import tqdm
 
 from clusters import Cluster
 from distance import Time
@@ -66,7 +67,7 @@ class IncrementalBatchRouteAssigner(TravelRouteAssigner):
             self.graph[start][end]["weight"] = state.travel_time.minutes
 
         current_routes: Dict[TravelId, List[LinkState]] = {}
-        for iteration in range(self.iterations_count):
+        for iteration in tqdm(range(self.iterations_count)):
             for travels_batch in batched(travels, self.batch_size):
                 shortest_paths = dict(networkx.all_pairs_dijkstra_path(self.graph))
                 for travel in travels_batch:
